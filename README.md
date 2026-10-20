@@ -32,7 +32,7 @@ dotnet test LabWork10.sln --configuration Release
 
 ## GitHub Actions
 
-Workflow запускается при `push` и `pull_request` в ветку `master`. Для настоящего статус-бейджа создайте GitHub-репозиторий, отправьте туда проект и замените `your-user/your-repo` в ссылке ниже на имя пользователя и репозитория:
+Workflow запускается при `push` и `pull_request` в ветку `master`. Для настоящего статус-бейджа создайте GitHub-репозиторий, отправьте туда проект и замените `rest1k1/LabWork10` в ссылке ниже на имя пользователя и репозитория:
 
 ![.NET Regression Tests](https://github.com/your-user/your-repo/actions/workflows/autotests.yml/badge.svg)
 
