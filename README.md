@@ -1,37 +1,53 @@
 # Лабораторная работа №10
 
-Испытание ПО методом регрессионного тестирования. Проект рассчитан на открытие в Visual Studio 2026 на Windows и использует .NET 10.
+name: .NET Regression Tests
 
-## Открытие в Visual Studio
+# Запускается при push и pull request файлов .cs в ветку master
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - '**.cs'
+  pull_request:
+    branches: ["master"]
+    paths:
+      - '**.cs'
 
-1. Скопируйте папку проекта на компьютер с Windows или распакуйте архив `LabWork10-Windows.zip`.
-2. Установите Visual Studio 2026 с рабочей нагрузкой **Разработка классических приложений .NET** и .NET 10 SDK.
-3. Откройте файл `LabWork10.sln`.
-4. Дождитесь восстановления NuGet-пакетов. Для восстановления требуется подключение к интернету.
-5. В обозревателе решений щёлкните правой кнопкой по решению и выберите **Собрать решение**.
-6. Запустите тесты через меню **Тест → Выполнить все тесты**. В окне обозревателя тестов должны пройти все 11 тестов.
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # ОС виртуальной машины
 
-## Запуск из терминала Windows
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Клонирование репозитория на ВМ
 
-Из каталога, в котором находится `LabWork10.sln`, выполните:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x' # Установка .NET 10 на ВМ
 
-```powershell
-dotnet restore LabWork10.sln
-dotnet build LabWork10.sln --configuration Release
-dotnet test LabWork10.sln --configuration Release
-```
+      - name: Restore dependencies
+        run: dotnet restore LabWork10.sln # Восстановление зависимостей
 
-Нужен .NET 10 SDK. Проект не зависит от файлов или путей на исходном компьютере; каталоги сборки и тестовые результаты создаются локально и исключены из передачи через `.gitignore`.
+      - name: Build solution # Построение решения
+        run: dotnet build LabWork10.sln --no-restore --configuration Release
 
-## Что реализовано
+      - name: Run tests with coverage and generate TRX log
+        run: dotnet test LabWork10.sln --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory TestResults # Запуск тестов и сохранение покрытия
 
-- Библиотека классов со статическим методом проверки пароля: минимум 8 символов, хотя бы одна цифра и хотя бы одна латинская буква.
-- Модульные тесты xUnit для положительных и отрицательных случаев.
-- Workflow GitHub Actions для сборки, тестирования, TRX-отчёта и отчёта о покрытии.
-- Письменный отчёт: [Report.md](./Report.md).
+      - name: Test Report # Сохранение отчета
+        uses: dorny/test-reporter@v2
+        if: success() || failure() # Запускается даже при ошибке тестов
+        with:
+          name: Test results
+          path: 'TestResults/**/*.trx'
+          reporter: dotnet-trx
 
-## GitHub Actions
-
-Workflow запускается при `push` и `pull_request` в ветку `master`. Статус-бейдж показывает состояние последнего запуска:
-
+      - name: Generate coverage report
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
+        if: success() || failure() # Запускается даже при ошибке тестов
+        with:
+          reports: 'TestResults/**/coverage.cobertura.xml'
+          targetdir: 'CoverageReport'
+          reporttypes: 'Html'
 [![.NET Regression Tests]
