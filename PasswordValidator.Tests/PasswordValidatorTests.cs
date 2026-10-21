@@ -14,7 +14,7 @@ public class PasswordValidatorTests
         Assert.True(PasswordValidation.PasswordValidator.IsValid(password));
     }
 
-    // Негативные тесты: проверяются пароли, не соответствующие правилам задания.
+    // Негативные тесты: проверяются пароли, не соответствующие правилам задания;круто
     [Theory]
     [InlineData(null)]
     [InlineData("")]
