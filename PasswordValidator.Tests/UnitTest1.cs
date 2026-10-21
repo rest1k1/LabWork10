@@ -22,6 +22,7 @@ public class PasswordValidatorTests
     [InlineData("12345678")]
     [InlineData("password")]
     [InlineData("Qwertyui")]
+    [InlineData("Пароль123")]
     public void IsValid_ReturnsFalse_ForInvalidPasswords(string? password)
     {
         Assert.False(PasswordValidation.PasswordValidator.IsValid(password));
