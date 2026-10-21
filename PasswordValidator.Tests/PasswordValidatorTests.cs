@@ -4,6 +4,7 @@ using PasswordValidation;
 
 public class PasswordValidatorTests
 {
+    // Позитивные тесты: пароль содержит не менее 8 символов, цифру и латинскую букву.
     [Theory]
     [InlineData("Password1")]
     [InlineData("Abcdef12")]
@@ -13,6 +14,7 @@ public class PasswordValidatorTests
         Assert.True(PasswordValidation.PasswordValidator.IsValid(password));
     }
 
+    // Негативные тесты: проверяются пароли, не соответствующие правилам задания.
     [Theory]
     [InlineData(null)]
     [InlineData("")]
