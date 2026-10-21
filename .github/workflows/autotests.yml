@@ -4,17 +4,11 @@ on:
   push:
     branches: ["master"]
     paths:
-      - '**/*.cs'
-      - '**/*.csproj'
-      - '**/*.sln'
-      - '.github/workflows/**'
+      - '**.cs'
   pull_request:
     branches: ["master"]
     paths:
-      - '**/*.cs'
-      - '**/*.csproj'
-      - '**/*.sln'
-      - '.github/workflows/**'
+      - '**.cs'
 
 jobs:
   build-and-test:
@@ -52,11 +46,4 @@ jobs:
         with:
           reports: 'TestResults/**/coverage.cobertura.xml'
           targetdir: 'CoverageReport'
-          reporttypes: 'HtmlInline_AzurePipelines;Html_Dark;MarkdownSummaryGithub'
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: coverage-report
-          path: CoverageReport
+          reporttypes: 'Html'
