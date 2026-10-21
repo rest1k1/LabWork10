@@ -1,12 +1,11 @@
-# Лабораторная работа №10
-
 name: .NET Regression Tests
 
-on: //Запускается при push и pull request файлов .cs в ветку master
+on: 
   push:
     branches: ["master"]
     paths:
       - '**.cs'
+      
   pull_request:
     branches: ["master"]
     paths:
@@ -14,29 +13,29 @@ on: //Запускается при push и pull request файлов .cs в в�
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest # ОС виртуальной машины
+    runs-on: ubuntu-latest 
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4 # Клонирование репозитория на ВМ
+        uses: actions/checkout@v4 
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x' # Установка .NET 10 на ВМ
+          dotnet-version: '10.0.x' 
 
       - name: Restore dependencies
-        run: dotnet restore LabWork10.sln # Восстановление зависимостей
+        run: dotnet restore LabWork10.sln 
 
-      - name: Build solution # Построение решения
+      - name: Build solution 
         run: dotnet build LabWork10.sln --no-restore --configuration Release
 
       - name: Run tests with coverage and generate TRX log
-        run: dotnet test LabWork10.sln --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory TestResults # Запуск тестов и сохранение покрытия
+        run: dotnet test LabWork10.sln --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --results-directory TestResults 
 
-      - name: Test Report # Сохранение отчета
+      - name: Test Report 
         uses: dorny/test-reporter@v2
-        if: success() || failure() # Запускается даже при ошибке тестов
+        if: success() || failure() 
         with:
           name: Test results
           path: 'TestResults/**/*.trx'
@@ -44,7 +43,7 @@ jobs:
 
       - name: Generate coverage report
         uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
-        if: success() || failure() # Запускается даже при ошибке тестов
+        if: success() || failure() 
         with:
           reports: 'TestResults/**/coverage.cobertura.xml'
           targetdir: 'CoverageReport'
